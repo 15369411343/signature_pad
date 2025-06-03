@@ -429,9 +429,14 @@ export default class SignaturePad extends SignatureEventTarget {
 
   // Private methods
   private _strokeBegin(event: SignatureEvent): void {
-    const cancelled = !this.dispatchEvent(
-      new CustomEvent('beginStroke', { detail: event, cancelable: true }),
-    );
+    let e: CustomEvent;
+    try {
+      e = new CustomEvent('beginStroke', { detail: event, cancelable: true });
+    } catch {
+      e = document.createEvent('CustomEvent');
+      e.initCustomEvent('beginStroke', false, true, event);
+    }
+    const cancelled = !this.dispatchEvent(e);
     if (cancelled) {
       return;
     }
@@ -480,9 +485,14 @@ export default class SignaturePad extends SignatureEventTarget {
       return;
     }
 
-    this.dispatchEvent(
-      new CustomEvent('beforeUpdateStroke', { detail: event }),
-    );
+    let e: CustomEvent;
+    try {
+      e = new CustomEvent('beforeUpdateStroke', { detail: event });
+    } catch {
+      e = document.createEvent('CustomEvent');
+      e.initCustomEvent('beforeUpdateStroke', false, false, event);
+    }
+    this.dispatchEvent(e);
 
     const point = this._createPoint(event.x, event.y, event.pressure);
     const lastPointGroup = this._data[this._data.length - 1];
@@ -512,7 +522,13 @@ export default class SignaturePad extends SignatureEventTarget {
       });
     }
 
-    this.dispatchEvent(new CustomEvent('afterUpdateStroke', { detail: event }));
+    try {
+      e = new CustomEvent('afterUpdateStroke', { detail: event });
+    } catch {
+      e = document.createEvent('CustomEvent');
+      e.initCustomEvent('afterUpdateStroke', false, false, event);
+    }
+    this.dispatchEvent(e);
   }
 
   private _strokeEnd(event: SignatureEvent, shouldUpdate = true): void {
@@ -527,7 +543,14 @@ export default class SignaturePad extends SignatureEventTarget {
     }
 
     this._drawingStroke = false;
-    this.dispatchEvent(new CustomEvent('endStroke', { detail: event }));
+    let e: CustomEvent;
+    try {
+      e = new CustomEvent('endStroke', { detail: event });
+    } catch {
+      e = document.createEvent('CustomEvent');
+      e.initCustomEvent('endStroke', false, false, event);
+    }
+    this.dispatchEvent(e);
   }
 
   private _handlePointerEvents(): void {

@@ -17,7 +17,7 @@ module.exports = [
   {
     // UMD unminified
     input: 'src/signature_pad.ts',
-    plugins: [typescript({ target: 'ES2015' })],
+    plugins: [typescript({ target: 'ES5' })],
     output: {
       // dir: 'dist',
       file: 'dist/signature_pad.umd.js',
@@ -30,7 +30,7 @@ module.exports = [
   {
     // UMD minified
     input: 'src/signature_pad.ts',
-    plugins: [typescript({ target: 'ES2015' })],
+    plugins: [typescript({ target: 'ES5' })],
     output: {
       // dir: 'dist',
       file: 'dist/signature_pad.umd.min.js',
